@@ -107,7 +107,7 @@
         document.body.appendChild(listElement);
         listElement.setAttribute('id', list_data)
         var listItem = document.createElement('li');
-        listItem.innerHTML = list_data;
+        listItem.innerHTML = "<h4 class='city_headings'>" + list_data + "</h4>";
         listElement.appendChild(listItem);
     }
 

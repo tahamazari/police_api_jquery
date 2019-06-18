@@ -6,7 +6,16 @@
     }
 }
 
+ul {
+    list-style-type: none;
+}
+
 .headings {
     width: 100%;
     text-align: center;
+}
+
+.city_headings {
+    text-transform: capitalize;
+    font-size: 2.5rem;
 }

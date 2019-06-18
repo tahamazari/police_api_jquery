@@ -1,0 +1,11 @@
+.ul_lists li {
+  float: left;
+  padding: 0.5em 1em;
+  margin: 0.3em 1em;
+}
+
+.headings {
+  width: 100%;
+  text-align: center;
+}
+/*# sourceMappingURL=style.css.map */

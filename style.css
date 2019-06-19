@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css?family=Oxygen");
 .ul_lists li {
   float: left;
   padding: 0.5em 1em;
@@ -11,10 +12,33 @@ ul {
 .headings {
   width: 100%;
   text-align: center;
+  padding: 2% 0% 0% 0%;
 }
 
 .city_headings {
   text-transform: capitalize;
   font-size: 2.5rem;
+  text-align: center;
+  font-family: 'Oxygen';
+}
+
+.header_main {
+  width: 100%;
+  overflow: hidden;
+  height: auto;
+  display: block;
+  background: #343a40;
+}
+
+.header {
+  padding: 2% 0%;
+  width: 80%;
+  overflow: hidden;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  color: #fff;
+  font-family: "Oxygen";
+  font-size: 2em;
 }
 /*# sourceMappingURL=style.css.map */

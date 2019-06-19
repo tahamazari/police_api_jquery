@@ -3,137 +3,46 @@
 <head>
     <title>Police API</title><link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css" />
     <link rel="stylesheet" type="text/css" href="style.css" />
 </head>
-<body>
-    <div class="row">
-        <div class="headings">
-            <h4>List of all the Police Forces</h4>
+    <body>
+        <div class="header_main">
+            <div class="header">DATA.POLICE.UK</div>
         </div>
-        <ul class="ul_lists" id="all_forces_ul">
-        </ul>
-    </div>
-    <div id="header_generator">
-        <ul id="ul_force_headings"></ul>
-        
-        <div id="ul_officer_name_div">
-            <ul id="ul_officer_name"></ul>
+        <div class="row">
+            <div class="headings">
+                <h4 class="city_headings">List of all the Police Forces</h4>
+            </div>
         </div>
-            
-    </div>
-    
-    
-</body>
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
+                <table id="forces_name_table">
+                </table>
+            </div>
+            <div class="col-md-2"></div>
+        </div>
+        <div id="header_generator">          
+            <div id="ul_officer_name_div">
+                <ul id="ul_officer_name"></ul>
+            </div>    
+        </div>
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
+                <div id="accordion">
+                </div>
+            </div>
+            <div class="col-md-2"></div>
+        </div>
+    </body>
 
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-
-<script>
-
-    var all_forces
-    var ids_of_forces = []
-    var officers_details_object = []
-    var new_data_object = []
-
-
-    function fetch_and_assign(url, data){
-        if ("all_forces" in localStorage) {
-            var local_all_forces = JSON.parse(localStorage.getItem('all_forces'))
-            render_ul(local_all_forces)
-        } 
-        else {
-            fetch(url)
-            .then(function(response) {
-                return response.json();
-            })
-            .then(function(myJson) {
-                data = myJson
-                console.log(myJson)
-                localStorage.setItem('all_forces', JSON.stringify((data)))
-                render_ul(data)
-            });
-            return data
-        }
-    }
-
-    function get_officers(list){
-        if("officers_details_object" in localStorage){
-            var local_officers_details_object = JSON.parse(localStorage.getItem('officers_details_object'))
-            var local_new_data_object = JSON.parse(localStorage.getItem('new_data_object'))
-            console.log(local_officers_details_object, local_new_data_object)
-            make_force_officer_list_local(local_new_data_object)
-        }
-        else {
-            for(let i = 0; i < list.length; i++){
-                fetch('https://data.police.uk/api/forces/' + list[i] + '/people')
-                .then(function(response) {
-                    return response.json();
-                })
-                .then(function(data) {
-                    if(data.length !== 0){
-                        officers_details_object.push(data)
-                        new_data_object.push({force: list[i], officers_data: data})
-                        console.log(officers_details_object, "howdy")
-                        localStorage.setItem('officers_details_object', JSON.stringify((officers_details_object))) 
-                        localStorage.setItem('new_data_object', JSON.stringify((new_data_object)))                       
-                        make_force_officer_list({force: list[i], officers_data: data})
-                    }
-                });
-            }
-            return officers_details_object
-        }
-    }
-
-    fetch_and_assign('https://data.police.uk/api/forces', all_forces)
-
-    function render_ul(data){
-        var all_forces_ul = document.getElementById("all_forces_ul");
-        
-        for (var i = 0; i < data.length; i++) {
-            var force = data[i]["name"];
-            var listItem = document.createElement("li");
-            listItem.classList.add("list-group-item");
-            listItem.textContent = force;
-            all_forces_ul.appendChild(listItem);
-            ids_of_forces.push(data[i]['id'])
-        }
-
-        get_officers(ids_of_forces)
-    }
-
-    function add_headers(list_data){
-        var listElement = document.createElement('ul');
-        document.body.appendChild(listElement);
-        listElement.setAttribute('id', list_data)
-        var listItem = document.createElement('li');
-        listItem.innerHTML = "<h4 class='city_headings'>" + list_data + "</h4>";
-        listElement.appendChild(listItem);
-    }
-
-    function add_officer_data(list_data, id){
-        for(let i = 0; i < list_data.length; i++){
-            var listElement = document.getElementById(id);
-            var listItem = document.createElement('li');
-            listItem.innerHTML = "<b>Name: </b>" + list_data[i].name + " <b>Rank: </b>" + list_data[i].rank;
-            listElement.appendChild(listItem);
-        }
-    }
-
-
-    function make_force_officer_list(list_data) {
-        add_headers(list_data['force'])
-        add_officer_data(list_data['officers_data'], list_data['force'])
-    }
-
-    function make_force_officer_list_local(list_data){
-        console.log(list_data)
-        for(let i = 0; i < list_data.length; i++){
-            add_headers(list_data[i]['force'])
-            add_officer_data(list_data[i]['officers_data'], list_data[i]['force'])
-        }
-    }
-
-</script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
+    <script src="main.js"></script>
 
 </html>
